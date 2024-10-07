@@ -32,7 +32,7 @@ app.use((req, res) => {
 
 storeService.initialize()
   .then(() => {
-    console.log(storeService.getAllItems());
+    console.log(storeService.getPublishedItems());
   })
 
 app.listen(HTTP_PORT, () => console.log(`Express http server listening on ${HTTP_PORT}`)); 
