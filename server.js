@@ -30,4 +30,10 @@ app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, 'views/404.html'));
 })
 
+storeService.initialize()
+  .then(() => {
+    console.log(storeService.getAllItems());
+  })
+
 app.listen(HTTP_PORT, () => console.log(`Express http server listening on ${HTTP_PORT}`)); 
+
