@@ -47,6 +47,12 @@ module.exports.getAllItems = function() {
 module.exports.getPublishedItems = function() {
   const publishedItems = items.filter((obj) => obj.published);
   return new Promise((resolve, reject) => {
-    publishedItems.length == 0 ? reject('now results returned') : resolve(publishedItems);
+    publishedItems.length == 0 ? reject('no results returned') : resolve(publishedItems);
+  })
+}
+
+module.exports.getCategories = function() {
+  return new Promise((resolve, reject) => {
+    categories.length == 0 ? reject('no results returned') : resolve(categories);
   })
 }
