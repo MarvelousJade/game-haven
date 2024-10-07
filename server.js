@@ -1,3 +1,16 @@
+/*********************************************************************************
+
+WEB322 – Assignment 02
+I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part *  of this assignment has been copied manually or electronically from any other source (including 3rd party web sites) or distributed to other students.
+
+Name: Shaoyu Fan
+Student ID: 125988238 
+Date: ________________
+Cyclic Web App URL: _______________________________________________________
+GitHub Repository URL: ______________________________________________________
+
+********************************************************************************/ 
+
 const path = require('path');
 const express = require('express'); // "require" the Express module
 const storeService = require('./store-service');
@@ -15,16 +28,28 @@ app.get('/about', (req, res) => {
 });
 
 app.get('/shop', (req, res) => {
-  res.send(`TODO: get all items who have published==true`);
+  storeService.getAllItems()
+  .then((data) => {
+    res.send(data);
+  })
+  .catch((err) => console.log(`{message: ${err}}`));
 });
 
 app.get('/items', (req, res) => {
-  res.send(`TODO: get all the items within the items.json file`);
+  storeService.getPublishedItems()
+  .then((data) => {
+    res.send(data);
+  })
+  .catch((err) => console.log(`{message: ${err}}`));
 });
 
 app.get('/categories', (req, res) => {
-  res.send(`TODO: get all the categories within the categories.json file`);
-});
+  storeService.getCategories()
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => console.log(`{message: ${err}}`));
+  });
 
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, 'views/404.html'));
