@@ -30,7 +30,9 @@ app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, 'views/404.html'));
 })
 
-    console.log(storeService.getCategories());
-
-app.listen(HTTP_PORT, () => console.log(`Express http server listening on ${HTTP_PORT}`)); 
+storeService.initialize()
+  .then(
+    app.listen(HTTP_PORT, () => console.log(`Express http server listening on ${HTTP_PORT}`)) 
+  )
+  .catch((err) => console.log(err));
 
