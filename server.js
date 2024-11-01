@@ -17,6 +17,7 @@ const storeService = require('./store-service');
 const multer = require("multer");
 const cloudinary = require('cloudinary').v2;
 cloudinary.config({
+  cloud_name: 'drgolqrkr',
   api_key: '437251579173388',
   api_secret: 'DkXsDC_L263_JqGObb4tua7T5Ts',
   secure: true
