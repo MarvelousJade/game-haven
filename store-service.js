@@ -6,7 +6,7 @@ let categories = [];
 
 module.exports.initialize = function() {
   const itemsPath = path.join(__dirname, 'data/items.json');
-  const categoriesPath = path.join(__dirname, 'data/items.json');
+  const categoriesPath = path.join(__dirname, 'data/categories.json');
 
   return new Promise((resolve, reject) => {
     fs.readFile(itemsPath, 'utf8', (err, data) => {
@@ -59,9 +59,35 @@ module.exports.getCategories = function() {
 
 module.exports.addItem = function(itemData) {
   return new Promise((resolve, reject) => {
-    itemData.published == null ? itemData.published = false : itemData.published = true;
-    itemData.id = items.length + 1;
-    items.push(itemData);
-    itemData ? resolve(itemData) : reject('Fail to fetch itemData');
+    try {
+      typeof itemData.published === 'undefined' ? itemData.published = false : itemData.published = true;
+      itemData.id = items.length + 1;
+      items.push(itemData);
+      resolve(itemData);  
+    } catch (error) {
+      reject(error);
+    }
+  });
+}
+
+module.exports.getItemByCategory = function(category) {
+  return new Promise((resolve, reject) => {
+    const categoryInt = parseInt(category, 10);
+    const itemsByCategory = items.filter((obj) => obj.category = categoryInt);
+    itemsByCategory.length == 0 ? reject('no results returned') : resolve(itemsByCategory);
+  })
+}
+
+module.exports.getItemByMinDate = function(minDateStr) {
+  return new Promise((resolve, reject) => {
+    const itemsByMinDate = items.filter((obj) => new Date(obj.postDate) >= new Date(minDateStr));
+    itemsByMinDate.length == 0 ? reject('no results returned') : resolve(itemsByMinDate);
+  })
+}
+
+module.exports.getItemById = function(id) {
+  return new Promise((resolve, reject) => {
+    const itemsById = items.filter((obj) => obj.id = id);
+    itemsById.length == 0 ? reject('no results returned') : resolve(itemsById);
   })
 }

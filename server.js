@@ -50,11 +50,36 @@ app.get('/shop', (req, res) => {
 });
 
 app.get('/items', (req, res) => {
-  storeService.getPublishedItems()
-  .then((data) => {
-    res.send(data);
-  })
-  .catch((err) => console.log(`{message: ${err}}`));
+  const { category, minDate } = req.query;
+  if (category) {
+    storeService.getItemByCategory(category)
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => console.log(`{message: ${err}}`));
+  } else if (minDate) {
+    storeService.getItemByMinDate(minDate)
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => console.log(`{message: ${err}}`));
+  } else {
+    storeService.getPublishedItems()
+      .then((data) => {
+        res.send(data);
+      })
+      .catch((err) => console.log(`{message: ${err}}`));
+  }
+});
+
+app.get('/items/:id', (req, res) => {
+  const { id } = req.params;
+
+  storeService.getItemById(id)
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((err) => console.log(`{message: ${err}}`));
 });
 
 app.get('/categories', (req, res) => {
@@ -92,7 +117,7 @@ app.post('/items/add', upload.single("featureImage"), (req, res) => {
     upload(req).then((uploaded)=>{
         processItem(uploaded.url);
     });
-}else{
+  }else{
     processItem("");
 }
  
@@ -107,7 +132,7 @@ function processItem(imageUrl){
       })
       .catch((err) => {
         console.error('Error Adding Item; ', err)
-        res.status(500).send("Faliled to add the item. Please try again.");
+        res.status(500).send("Failed to add the item. Please try again.");
       })
 } 
 }) 
