@@ -56,3 +56,12 @@ module.exports.getCategories = function() {
     categories.length == 0 ? reject('no results returned') : resolve(categories);
   })
 }
+
+module.exports.addItem = function(itemData) {
+  return new Promise((resolve, reject) => {
+    itemData.published == null ? itemData.published = false : itemData.published = true;
+    itemData.id = items.length + 1;
+    items.push(itemData);
+    itemData ? resolve(itemData) : reject('Fail to fetch itemData');
+  })
+}

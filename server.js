@@ -14,6 +14,16 @@ GitHub Repository URL: https://github.com/MarvelousJade/web322-app
 const path = require('path');
 const express = require('express'); // "require" the Express module
 const storeService = require('./store-service');
+const multer = require("multer");
+const cloudinary = require('cloudinary').v2;
+cloudinary.config({
+  api_key: '437251579173388',
+  api_secret: 'DkXsDC_L263_JqGObb4tua7T5Ts',
+  secure: true
+});
+const streamifier = require('streamifier');
+
+const upload = multer();
 const app = express(); // obtain the "app" object
 const HTTP_PORT = process.env.PORT || 8080; // assign a port
 
@@ -54,6 +64,53 @@ app.get('/categories', (req, res) => {
     })
     .catch((err) => console.log(`{message: ${err}}`));
   });
+
+app.post('/items/add', upload.single("featureImage"), (req, res) => {
+  if(req.file){
+    let streamUpload = (req) => {
+        return new Promise((resolve, reject) => {
+            let stream = cloudinary.uploader.upload_stream(
+                (error, result) => {
+                    if (result) {
+                        resolve(result);
+                    } else {
+                        reject(error);
+                    }
+                }
+            );
+
+            streamifier.createReadStream(req.file.buffer).pipe(stream);
+        });
+    };
+
+    async function upload(req) {
+        let result = await streamUpload(req);
+        console.log(result);
+        return result;
+    }
+
+    upload(req).then((uploaded)=>{
+        processItem(uploaded.url);
+    });
+}else{
+    processItem("");
+}
+ 
+function processItem(imageUrl){
+    req.body.featureImage = imageUrl;
+
+    // TODO: Process the req.body and add it as a new Item before redirecting to /items
+    storeService.addItem(req.body)
+      .then((newItem) => {
+        console.log('New Item Added: ', newItem);
+        res.redirect('/items');
+      })
+      .catch((err) => {
+        console.error('Error Adding Item; ', err)
+        res.status(500).send("Faliled to add the item. Please try again.");
+      })
+} 
+}) 
 
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, 'views/404.html'));
