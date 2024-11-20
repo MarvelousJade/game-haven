@@ -30,19 +30,22 @@ const app = express(); // obtain the "app" object
 const HTTP_PORT = process.env.PORT || 8080; // assign a port
 
 app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
+
 app.engine('hbs', exphbs.engine({
   extname: '.hbs',
   defaultLayout: 'main',
-  layoutsDir: path.join((__dirname, 'views', 'layouts')),
+  layoutsDir: path.join(__dirname, 'views', 'layouts'),
 }))
 app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views'));
 
 app.get('/', (req, res) => {
   res.redirect('/about');
 });
 
 app.get('/about', (req, res) => {
-  res.sendFile(path.join(__dirname, '/views/about.html'));
+  res.render('about');
 });
 
 app.get('/items/add', (req, res) => {
