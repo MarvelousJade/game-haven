@@ -77,19 +77,25 @@ app.get('/items', (req, res) => {
   if (category) {
     storeService.getItemByCategory(category)
       .then((data) => {
-        res.send(data);
+        res.render('items', {
+          data: data,
+        });
       })
-      .catch((err) => console.log(`{message: ${err}}`));
+      .catch((err) => res.render('items', { data: err }));
   } else if (minDate) {
     storeService.getItemByMinDate(minDate)
       .then((data) => {
-        res.send(data);
+        res.render('items', {
+          data: data,
+        });
       })
-      .catch((err) => console.log(`{message: ${err}}`));
+      .catch((err) => res.render('items', { data: err }));
   } else {
     storeService.getPublishedItems()
       .then((data) => {
-        res.send(data);
+        res.render('items', {
+          data: data,
+        });
       })
       .catch((err) => console.log(`{message: ${err}}`));
   }
