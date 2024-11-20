@@ -9,7 +9,7 @@ Date: 10/7/2024
 Render Web App URL: https://web322-app-5d7z.onrender.com
 GitHub Repository URL: https://github.com/MarvelousJade/web322-app
 
-********************************************************************************/ 
+********************************************************************************/
 
 const path = require('path');
 const express = require('express'); // "require" the Express module
@@ -23,12 +23,19 @@ cloudinary.config({
   secure: true
 });
 const streamifier = require('streamifier');
+const exphbs = require('express-handlebars');
 
 const upload = multer();
 const app = express(); // obtain the "app" object
 const HTTP_PORT = process.env.PORT || 8080; // assign a port
 
 app.use(express.static('public'));
+app.engine('hbs', exphbs.engine({
+  extname: '.hbs',
+  defaultLayout: 'main',
+  layoutsDir: path.join((__dirname, 'views', 'layouts')),
+}))
+app.set('view engine', 'hbs');
 
 app.get('/', (req, res) => {
   res.redirect('/about');
@@ -44,10 +51,10 @@ app.get('/items/add', (req, res) => {
 
 app.get('/shop', (req, res) => {
   storeService.getAllItems()
-  .then((data) => {
-    res.send(data);
-  })
-  .catch((err) => console.log(`{message: ${err}}`));
+    .then((data) => {
+      res.send(data);
+    })
+    .catch((err) => console.log(`{message: ${err}}`));
 });
 
 app.get('/items', (req, res) => {
@@ -89,40 +96,40 @@ app.get('/categories', (req, res) => {
       res.send(data);
     })
     .catch((err) => console.log(`{message: ${err}}`));
-  });
+});
 
 app.post('/items/add', upload.single("featureImage"), (req, res) => {
-  if(req.file){
+  if (req.file) {
     let streamUpload = (req) => {
-        return new Promise((resolve, reject) => {
-            let stream = cloudinary.uploader.upload_stream(
-                (error, result) => {
-                    if (result) {
-                        resolve(result);
-                    } else {
-                        reject(error);
-                    }
-                }
-            );
+      return new Promise((resolve, reject) => {
+        let stream = cloudinary.uploader.upload_stream(
+          (error, result) => {
+            if (result) {
+              resolve(result);
+            } else {
+              reject(error);
+            }
+          }
+        );
 
-            streamifier.createReadStream(req.file.buffer).pipe(stream);
-        });
+        streamifier.createReadStream(req.file.buffer).pipe(stream);
+      });
     };
 
     async function upload(req) {
-        let result = await streamUpload(req);
-        console.log(result);
-        return result;
+      let result = await streamUpload(req);
+      console.log(result);
+      return result;
     }
 
-    upload(req).then((uploaded)=>{
-        processItem(uploaded.url);
+    upload(req).then((uploaded) => {
+      processItem(uploaded.url);
     });
-  }else{
+  } else {
     processItem("");
-}
- 
-function processItem(imageUrl){
+  }
+
+  function processItem(imageUrl) {
     req.body.featureImage = imageUrl;
 
     // TODO: Process the req.body and add it as a new Item before redirecting to /items
@@ -135,8 +142,8 @@ function processItem(imageUrl){
         console.error('Error Adding Item; ', err)
         res.status(500).send("Failed to add the item. Please try again.");
       })
-} 
-}) 
+  }
+})
 
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, 'views/404.html'));
@@ -144,7 +151,7 @@ app.use((req, res) => {
 
 storeService.initialize()
   .then(
-    app.listen(HTTP_PORT, () => console.log(`Express http server listening on ${HTTP_PORT}`)) 
+    app.listen(HTTP_PORT, () => console.log(`Express http server listening on ${HTTP_PORT}`))
   )
   .catch((err) => console.log(err));
 
