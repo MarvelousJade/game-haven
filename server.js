@@ -16,14 +16,17 @@ const express = require('express'); // "require" the Express module
 const storeService = require('./store-service');
 const multer = require("multer");
 const cloudinary = require('cloudinary').v2;
+const streamifier = require('streamifier');
+const exphbs = require('express-handlebars');
+const { equal } = require('assert');
+const helpers = require('./helpers');
+
 cloudinary.config({
   cloud_name: 'drgolqrkr',
   api_key: '437251579173388',
   api_secret: 'DkXsDC_L263_JqGObb4tua7T5Ts',
   secure: true
 });
-const streamifier = require('streamifier');
-const exphbs = require('express-handlebars');
 
 const upload = multer();
 const app = express(); // obtain the "app" object
@@ -36,9 +39,18 @@ app.engine('hbs', exphbs.engine({
   extname: '.hbs',
   defaultLayout: 'main',
   layoutsDir: path.join(__dirname, 'views', 'layouts'),
+  helpers: helpers,
 }))
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, 'views'));
+
+
+app.use(function(req, res, next) {
+  let route = req.path.substring(1);
+  app.locals.activeRoute = "/" + (isNaN(route.split('/')[1]) ? route.replace(/\/(?!.*)/, "") : route.replace(/\/(.*)/, ""));
+  app.locals.viewingCategory = req.query.category;
+  next();
+});
 
 app.get('/', (req, res) => {
   res.redirect('/about');
@@ -49,7 +61,7 @@ app.get('/about', (req, res) => {
 });
 
 app.get('/items/add', (req, res) => {
-  res.sendFile(path.join(__dirname, '/views/addItem.html'));
+  res.render('addItem');
 });
 
 app.get('/shop', (req, res) => {
