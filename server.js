@@ -97,7 +97,7 @@ app.get('/items', (req, res) => {
           data: data,
         });
       })
-      .catch((err) => console.log(`{message: ${err}}`));
+      .catch((err) => res.render('items', { data: err }));
   }
 });
 
@@ -114,9 +114,11 @@ app.get('/items/:id', (req, res) => {
 app.get('/categories', (req, res) => {
   storeService.getCategories()
     .then((data) => {
-      res.send(data);
+      res.render('categories', {
+        data: data,
+      });
     })
-    .catch((err) => console.log(`{message: ${err}}`));
+    .catch((err) => res.render('categories', { data: err }));
 });
 
 app.post('/items/add', upload.single("featureImage"), (req, res) => {
