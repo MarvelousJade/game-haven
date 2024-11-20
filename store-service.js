@@ -21,19 +21,19 @@ module.exports.initialize = function() {
         return;
       }
 
-        fs.readFile(categoriesPath, 'utf8', (err, data) => {
-          if (err) {
-            reject('unable to read categories.json');
-            return;
-          };
-          try {
-            categories = JSON.parse(data);
-          } catch (err) {
-            reject('Error parsing categories.json');
-            return;
-          }
-          resolve();
-        });
+      fs.readFile(categoriesPath, 'utf8', (err, data) => {
+        if (err) {
+          reject('unable to read categories.json');
+          return;
+        };
+        try {
+          categories = JSON.parse(data);
+        } catch (err) {
+          reject('Error parsing categories.json');
+          return;
+        }
+        resolve();
+      });
     });
   })
 }
@@ -42,6 +42,13 @@ module.exports.getAllItems = function() {
   return new Promise((resolve, reject) => {
     items.length == 0 ? reject('no results returned') : resolve(items);
   });
+}
+
+module.exports.getPublishedItemsByCategory(category) = function() {
+  const publishedItems = items.filter((obj) => obj.published && obj.category == category);
+  return new Promise((resolve, reject) => {
+    publishedItems.length == 0 ? reject('no results returned') : resolve(publishedItems);
+  })
 }
 
 module.exports.getPublishedItems = function() {
@@ -63,7 +70,7 @@ module.exports.addItem = function(itemData) {
       typeof itemData.published === 'undefined' ? itemData.published = false : itemData.published = true;
       itemData.id = items.length + 1;
       items.push(itemData);
-      resolve(itemData);  
+      resolve(itemData);
     } catch (error) {
       reject(error);
     }
