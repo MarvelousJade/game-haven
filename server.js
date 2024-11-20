@@ -76,10 +76,10 @@ app.get("/shop", async (req, res) => {
     // if there's a "category" query, filter the returned items by category
     if (req.query.category) {
       // Obtain the published "item" by category
-      items = await itemData.getPublishedItemsByCategory(req.query.category);
+      items = await storeService.getPublishedItemsByCategory(req.query.category);
     } else {
       // Obtain the published "items"
-      items = await itemData.getPublishedItems();
+      items = await storeService.getPublishedItems();
     }
 
     // sort the published items by itemDate
@@ -97,7 +97,7 @@ app.get("/shop", async (req, res) => {
 
   try {
     // Obtain the full list of "categories"
-    let categories = await itemData.getCategories();
+    let categories = await storeService.getCategories();
 
     // store the "categories" data in the viewData object (to be passed to the view)
     viewData.categories = categories;

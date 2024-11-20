@@ -44,7 +44,7 @@ module.exports.getAllItems = function() {
   });
 }
 
-module.exports.getPublishedItemsByCategory(category) = function() {
+module.exports.getPublishedItemsByCategory = function(category) {
   const publishedItems = items.filter((obj) => obj.published && obj.category == category);
   return new Promise((resolve, reject) => {
     publishedItems.length == 0 ? reject('no results returned') : resolve(publishedItems);
