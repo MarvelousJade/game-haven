@@ -6,7 +6,7 @@
         <div class="col-4">
           <h2>{{data.item.title}}</h2>
           <img
-            src={{data.item.featureImage}}
+            src="{{data.item.featureImage}}"
             alt="feature Image"
             style="width:100%"
           />
@@ -16,6 +16,7 @@
           <br />
           <div class="row">
             <div class="col-12">
+
               {{{data.item.body}}}
 
               <br /><br />
@@ -40,13 +41,13 @@
   </section>
 
   <aside class="col-md-3">
-    {{#if data.items.length}}
+    {{#if data.items}}
     <br /><br />
     <h4>Items</h4>
 
     {{#each data.items}}
     <ul class="list-group">
-      <a href= "/shop/{{id}}?category={{../viewingCategory}}" class="list-group-item">{{title}}</a>
+      <a href="/shop/{{id}}?category={{../viewingCategory}}" class="list-group-item">{{title}}</a>
     </ul>
     {{/each}}
     {{/if}}
