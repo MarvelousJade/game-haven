@@ -64,11 +64,21 @@ module.exports.getCategories = function() {
   })
 }
 
+function getCurrentDate() {
+  const today = new Date();
+  const year = today.getFullYear();
+  // Months are zero-based in JavaScript, so add 1 and pad with '0' if needed
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 module.exports.addItem = function(itemData) {
   return new Promise((resolve, reject) => {
     try {
       typeof itemData.published === 'undefined' ? itemData.published = false : itemData.published = true;
       itemData.id = items.length + 1;
+      itemData.postDate = getCurrentDate();
       items.push(itemData);
       resolve(itemData);
     } catch (error) {
@@ -80,7 +90,7 @@ module.exports.addItem = function(itemData) {
 module.exports.getItemByCategory = function(category) {
   return new Promise((resolve, reject) => {
     const categoryInt = parseInt(category, 10);
-    const itemsByCategory = items.filter((obj) => obj.category = categoryInt);
+    const itemsByCategory = items.filter((obj) => obj.category == categoryInt);
     itemsByCategory.length == 0 ? reject('no results returned') : resolve(itemsByCategory);
   })
 }
@@ -94,7 +104,7 @@ module.exports.getItemByMinDate = function(minDateStr) {
 
 module.exports.getItemById = function(id) {
   return new Promise((resolve, reject) => {
-    const itemsById = items.filter((obj) => obj.id = id);
+    const itemsById = items.find((obj) => obj.id == id);
     itemsById.length == 0 ? reject('no results returned') : resolve(itemsById);
   })
 }
