@@ -84,6 +84,7 @@ app.get("/shop", async (req, res) => {
 
     // sort the published items by itemDate
     items.sort((a, b) => new Date(b.itemDate) - new Date(a.itemDate));
+    items.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
 
     // get the latest item from the front of the list (element 0)
     let item = items[0];
