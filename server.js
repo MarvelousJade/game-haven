@@ -129,8 +129,8 @@ app.get('/shop/:id', async (req, res) => {
       items = await storeService.getPublishedItems();
     }
 
-    // sort the published items by itemDate
-    items.sort((a, b) => new Date(b.itemDate) - new Date(a.itemDate));
+    // sort the published items by postDate
+    items.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
 
     // store the "items" and "item" data in the viewData object (to be passed to the view)
     viewData.items = items;
