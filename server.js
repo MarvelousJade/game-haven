@@ -54,6 +54,7 @@ app.use(function(req, res, next) {
 
 app.get('/', (req, res) => {
   res.redirect('/about');
+  res.redirect('/shop');
 });
 
 app.get('/about', (req, res) => {
@@ -83,7 +84,6 @@ app.get("/shop", async (req, res) => {
     }
 
     // sort the published items by itemDate
-    items.sort((a, b) => new Date(b.itemDate) - new Date(a.itemDate));
     items.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
 
     // get the latest item from the front of the list (element 0)
