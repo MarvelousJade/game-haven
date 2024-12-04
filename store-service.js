@@ -68,10 +68,24 @@ function getCurrentDate() {
   return `${year}-${month}-${day}`;
 }
 
-module.exports.addItem = function(itemData) {
-  return new Promise((resolve, reject) => {
-    reject();
-  });
+module.exports.addItem = async function(itemData) {
+  itemData.published = (itemData.published) ? true : false;
+  for (value in itemData) {
+    if (value == "") value = null;
+  }
+  try {
+    await sequelize.sync();
+    await Item.create({
+      body: itemData.body,
+      title: itemData.title,
+      postDate: new Date(),
+      featureImage: itemData.featureImage,
+      published: itemData.published,
+      price: itemData.price,
+    })
+  } catch (error) {
+    throw new Error("unable to create post");
+  }
 }
 
 module.exports.getItemByCategory = async function(category) {
