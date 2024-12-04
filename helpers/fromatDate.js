@@ -1,4 +1,3 @@
-
 module.exports = unction(dateObj){
   let year = dateObj.getFullYear();
   let month = (dateObj.getMonth() + 1).toString();

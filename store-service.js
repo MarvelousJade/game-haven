@@ -11,6 +11,20 @@ let sequelize = new Sequelize('SenecaDB', 'SenecaDB_owner', '7BDIwiSykM9b', {
   query: { raw: true }
 });
 
+const Item = sequelize.define('Item', {
+  body: Sequelize.TEXT,
+  title: Sequelize.STRING,
+  postDate: Sequelize.DATE,
+  featureImage: Sequelize.STRING,
+  published: Sequelize.BOOLEAN,
+  price: Sequelize.DOUBLE,
+});
+
+const Category = sequelize.define('Category', {
+  category: Sequelize.STRING,
+});
+
+Item.belongsTo(Category, { FOREIGNKEYS: 'category' });
 
 module.exports.initialize = function() {
   return new Promise((resolve, reject) => {
