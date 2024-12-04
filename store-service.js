@@ -1,3 +1,17 @@
+const Sequelize = require('sequelize');
+
+
+let sequelize = new Sequelize('SenecaDB', 'SenecaDB_owner', '7BDIwiSykM9b', {
+  host: 'ep-super-dream-a5hb2oj6.us-east-2.aws.neon.tech',
+  dialect: 'postgres',
+  port: 5432,
+  dialectoptions: {
+    ssl: { rejectunauthorized: false }
+  },
+  query: { raw: true }
+});
+
+
 module.exports.initialize = function() {
   return new Promise((resolve, reject) => {
     reject();
