@@ -27,18 +27,33 @@ Item.belongsTo(Category, { FOREIGNKEYS: 'category' });
 
 module.exports.initialize = function() {
   return new Promise((resolve, reject) => {
-    sequelize.sync()
-      .then(resolve())
+    sequelize.sync().then(resolve())
       .catch(error => reject("Unable to sync the database"));
   })
 }
 
-module.exports.getAllItems = function() {
-  return new Promise((resolve, reject) => {
-    reject();
-  });
+
+module.exports.getAllItems = async function() {
+  try {
+    await sequelize.sync();
+    const items = await Item.findAll();
+    return items;
+  } catch (error) {
+    throw new Error("Unable to retrieve items from the database");
+  }
 }
 
+sequelize.sync().then(() => {
+  // return all first names only
+  Name.findAll({
+    attributes: ['fName'],
+  }).then((data) => {
+    console.log('All first names');
+    for (let i = 0; i < data.length; i++) {
+      console.log(data[i].fName);
+    }
+  });
+});
 module.exports.getPublishedItemsByCategory = function(category) {
   return new Promise((resolve, reject) => {
     reject();
