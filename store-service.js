@@ -78,7 +78,9 @@ module.exports.getItemByCategory = async function(category) {
   try {
     await sequelize.sync();
     const itemsByCategory = await Item.findAll({
-      where: { category: category },
+      where: {
+        category: category
+      },
     });
     return itemsByCategory;
   } catch (error) {
@@ -86,10 +88,21 @@ module.exports.getItemByCategory = async function(category) {
   }
 }
 
-module.exports.getItemByMinDate = function(minDateStr) {
-  return new Promise((resolve, reject) => {
-    reject();
-  })
+module.exports.getItemsByMinDate = async function(minDateStr) {
+  try {
+    await sequelize.sync();
+    const { gte } = Sequelize.Op;
+    const itemsByMinDate = await Item.findAll({
+      where: {
+        postDate: {
+          [gte]: new Date(minDateStr)
+        }
+      }
+    });
+    return itemsByMinDate;
+  } catch (error) {
+    throw new Error("no results returned");
+  }
 }
 
 module.exports.getItemById = function(id) {

@@ -171,7 +171,7 @@ app.get('/items', (req, res) => {
       })
       .catch((err) => res.render('items', { data: err }));
   } else if (minDate) {
-    storeService.getItemByMinDate(minDate)
+    storeService.getItemsByMinDate(minDate)
       .then((data) => {
         res.render('items', {
           data: data,
