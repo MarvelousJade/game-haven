@@ -77,12 +77,12 @@ module.exports.addItem = function(itemData) {
 module.exports.getItemByCategory = async function(category) {
   try {
     await sequelize.sync();
-    const itemsByCategory = await Item.findAll({
+    const items = await Item.findAll({
       where: {
         category: category
       },
     });
-    return itemsByCategory;
+    return items;
   } catch (error) {
     throw new Error("no results returned");
   }
@@ -92,21 +92,29 @@ module.exports.getItemsByMinDate = async function(minDateStr) {
   try {
     await sequelize.sync();
     const { gte } = Sequelize.Op;
-    const itemsByMinDate = await Item.findAll({
+    const items = await Item.findAll({
       where: {
         postDate: {
           [gte]: new Date(minDateStr)
         }
       }
     });
-    return itemsByMinDate;
+    return items;
   } catch (error) {
     throw new Error("no results returned");
   }
 }
 
-module.exports.getItemById = function(id) {
-  return new Promise((resolve, reject) => {
-    reject();
-  })
+module.exports.getItemById = async function(id) {
+  try {
+    await sequelize.sync();
+    const items = await Item.findAll({
+      where: {
+        id: id
+      }
+    })
+    return items;
+  } catch (error) {
+    throw new Error("no results returned");
+  }
 }
