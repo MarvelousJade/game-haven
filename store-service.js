@@ -39,25 +39,12 @@ module.exports.getAllItems = async function() {
     const items = await Item.findAll();
     return items;
   } catch (error) {
-    throw new Error("Unable to retrieve items from the database");
+    throw new Error("no results returned");
   }
 }
 
-sequelize.sync().then(() => {
-  // return all first names only
-  Name.findAll({
-    attributes: ['fName'],
-  }).then((data) => {
-    console.log('All first names');
-    for (let i = 0; i < data.length; i++) {
-      console.log(data[i].fName);
-    }
-  });
-});
-module.exports.getPublishedItemsByCategory = function(category) {
-  return new Promise((resolve, reject) => {
-    reject();
-  })
+module.exports.getPublishedItemsByCategory = async function(category) {
+
 }
 
 module.exports.getPublishedItems = function() {
@@ -87,10 +74,16 @@ module.exports.addItem = function(itemData) {
   });
 }
 
-module.exports.getItemByCategory = function(category) {
-  return new Promise((resolve, reject) => {
-    reject();
-  })
+module.exports.getItemByCategory = async function(category) {
+  try {
+    await sequelize.sync();
+    const itemsByCategory = await Item.findAll({
+      where: { category: category },
+    });
+    return itemsByCategory;
+  } catch (error) {
+    throw new Error("no results returned");
+  }
 }
 
 module.exports.getItemByMinDate = function(minDateStr) {
