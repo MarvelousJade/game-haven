@@ -1,4 +1,4 @@
-module.exports = unction(dateObj){
+module.exports = function(dateObj) {
   let year = dateObj.getFullYear();
   let month = (dateObj.getMonth() + 1).toString();
   let day = dateObj.getDate().toString();
