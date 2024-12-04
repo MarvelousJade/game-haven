@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 
-
 let sequelize = new Sequelize('SenecaDB', 'SenecaDB_owner', '7BDIwiSykM9b', {
   host: 'ep-super-dream-a5hb2oj6.us-east-2.aws.neon.tech',
   dialect: 'postgres',
@@ -28,7 +27,9 @@ Item.belongsTo(Category, { FOREIGNKEYS: 'category' });
 
 module.exports.initialize = function() {
   return new Promise((resolve, reject) => {
-    reject();
+    sequelize.sync()
+      .then(resolve())
+      .catch(error => reject("Unable to sync the database"));
   })
 }
 
