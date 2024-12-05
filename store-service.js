@@ -72,7 +72,7 @@ module.exports.getPublishedItems = async function() {
 
 module.exports.getCategories = async function() {
   try {
-    const categories = Category.findAll();
+    const categories = await Category.findAll();
     return categories;
   } catch (error) {
     console.log("no results turned");
@@ -89,13 +89,16 @@ function getCurrentDate() {
 }
 
 module.exports.addItem = async function(itemData) {
-  itemData.published = (itemData.published) ? true : false;
-  for (const key in itemData) {
-    if (itemData[key] === "") itemData[key] = null;
-  }
-  itemData.postDate = new Date();
   try {
-    await Item.create({
+    itemData.published = (itemData.published) ? true : false;
+
+    for (const key in itemData) {
+      if (itemData[key] === "") itemData[key] = null;
+    }
+
+    itemData.postDate = new Date();
+
+    const item = await Item.create({
       body: itemData.body,
       title: itemData.title,
       postDate: itemData.postDate,
@@ -103,6 +106,7 @@ module.exports.addItem = async function(itemData) {
       published: itemData.published,
       price: itemData.price,
     });
+    return item;
   } catch (error) {
     console.log(error);
     throw new Error("unable to create post");
