@@ -12,6 +12,7 @@
               <th>Category</th>
               <th>Price</th>
               <th>Published</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -19,10 +20,11 @@
             <tr>
               <td>{{id}}</td>
               <td>{{title}}</td>
-              <td>{{postDate}}</td>
+              <td>{{formatDate postDate}}</td>
               <td><a href="/items?category={{category}}">{{category}}</td>
               <td>{{price}}</td>
               <td>{{published}}</td>
+              <td><a href="/item/delete/{{id}}" class="btn btn-danger">remove</td>
             </tr>
             {{/each}}
           </tbody>
