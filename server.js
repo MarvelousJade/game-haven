@@ -248,19 +248,19 @@ app.post('/items/add', upload.single("featureImage"), (req, res) => {
     processItem("");
   }
 
-  function processItem(imageUrl) {
-    req.body.featureImage = imageUrl;
+  async function processItem(imageUrl) {
+    try {
+      req.body.featureImage = imageUrl;
 
-    // TODO: Process the req.body and add it as a new Item before redirecting to /items
-    storeService.addItem(req.body)
-      .then((newItem) => {
-        console.log('New Item Added: ', newItem);
-        res.redirect('/items');
-      })
-      .catch((err) => {
-        console.error('Error Adding Item; ', err)
-        res.status(500).send("Failed to add the item. Please try again.");
-      })
+      // TODO: Process the req.body and add it as a new Item before redirecting to /items
+      const newItem = await storeService.addItem(req.body)
+      console.log('New Item Added: ', newItem);
+      res.redirect('/items');
+
+    } catch (err) {
+      console.error('Error Adding Item; ', err)
+      res.status(500).send("Failed to add the item. Please try again.");
+    }
   }
 })
 
