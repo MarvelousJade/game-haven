@@ -20,6 +20,7 @@ const streamifier = require('streamifier');
 const exphbs = require('express-handlebars');
 const { equal } = require('assert');
 const helpers = require('./helpers');
+const { resolve } = require('dns');
 
 cloudinary.config({
   cloud_name: 'drgolqrkr',
@@ -307,6 +308,18 @@ app.post('/categories/add', (req, res) => {
       res.status(500).send("Failed to add the Category. Please try again.");
     }
   };
+})
+
+app.get('/categories/delete/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    storeService.deleteCategoryById(id)
+    res.redirect('/categories');
+  } catch (error) {
+    console.log('In delete category; ', error);
+    res.status(500).send('Unable to Remove Category')
+  };
+
 })
 
 app.use((req, res) => {

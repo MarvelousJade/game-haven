@@ -153,6 +153,16 @@ module.exports.getItemById = async function(id) {
   }
 }
 
+module.exports.deleteItemById = async function(id) {
+  try {
+    const items = await Item.destroy({
+      where: { id: id },
+    })
+    return items;
+  } catch (error) {
+    throw new Error("unable to delete item");
+  }
+}
 module.exports.addCategory = async function(categoryData) {
   for (const key in categoryData) {
     if (categoryData[key] === "") categoryData[key] = null;
@@ -164,5 +174,17 @@ module.exports.addCategory = async function(categoryData) {
     return category;
   } catch (error) {
     throw new Error("unable to create category");
+  };
+}
+
+module.exports.deleteCategoryById = async function(id) {
+  try {
+    const category = await Category.destroy({
+      where: { id: id },
+    });
+    return category;
+  } catch (error) {
+    console.log("In delete function. ", error);
+    throw new Error("unable to delete category");
   };
 }
