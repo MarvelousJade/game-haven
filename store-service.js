@@ -24,7 +24,6 @@ const Category = sequelize.define('Category', {
 });
 
 Item.belongsTo(Category, { foreignkeys: 'category' });
-Category.hasMany(Item, { foreignKey: 'categoryId' });
 
 module.exports.initialize = function() {
   return new Promise((resolve, reject) => {
