@@ -4,8 +4,8 @@ let sequelize = new Sequelize('SenecaDB', 'SenecaDB_owner', '7BDIwiSykM9b', {
   host: 'ep-super-dream-a5hb2oj6.us-east-2.aws.neon.tech',
   dialect: 'postgres',
   port: 5432,
-  dialectoptions: {
-    ssl: { rejectunauthorized: false }
+  dialectOptions: {
+    ssl: { rejectunAuthorized: false }
   },
   query: { raw: true }
 });
@@ -23,11 +23,12 @@ const Category = sequelize.define('Category', {
   category: Sequelize.STRING,
 });
 
-Item.belongsTo(Category, { FOREIGNKEYS: 'category' });
+Item.belongsTo(Category, { foreignkeys: 'category' });
+Category.hasMany(Item, { foreignKey: 'categoryId' });
 
 module.exports.initialize = function() {
   return new Promise((resolve, reject) => {
-    sequelize.sync().then(resolve())
+    sequelize.sync().then(resolve)
       .catch(error => reject("Unable to sync the database"));
   })
 }
@@ -108,7 +109,7 @@ module.exports.addItem = async function(itemData) {
     });
     return item;
   } catch (error) {
-    console.log(error);
+    console.log("Error in addItem: ", error);
     throw new Error("unable to create post");
   }
 }
