@@ -165,7 +165,6 @@ app.get('/items', (req, res) => {
   if (category) {
     storeService.getItemByCategory(category)
       .then((data) => {
-
         if (data.length > 0) {
           res.render('items', {
             data: data,
@@ -175,23 +174,34 @@ app.get('/items', (req, res) => {
             message: "no results",
           });
         }
-
       })
       .catch((err) => res.render('items', { data: err }));
   } else if (minDate) {
     storeService.getItemsByMinDate(minDate)
       .then((data) => {
-        res.render('items', {
-          data: data,
-        });
+        if (data.length > 0) {
+          res.render('items', {
+            data: data,
+          });
+        } else {
+          res.render('items', {
+            message: "no results",
+          });
+        }
       })
       .catch((err) => res.render('items', { data: err }));
   } else {
     storeService.getPublishedItems()
       .then((data) => {
-        res.render('items', {
-          data: data,
-        });
+        if (data.length > 0) {
+          res.render('items', {
+            data: data,
+          });
+        } else {
+          res.render('items', {
+            message: "no results",
+          });
+        }
       })
       .catch((err) => res.render('items', { data: err }));
   }
@@ -202,7 +212,15 @@ app.get('/items/:id', (req, res) => {
 
   storeService.getItemById(id)
     .then((data) => {
-      res.json(data);
+      if (data.length > 0) {
+        res.render('items', {
+          data: data,
+        });
+      } else {
+        res.render('items', {
+          message: "no results",
+        });
+      }
     })
     .catch((err) => console.log(`{message: ${err}}`));
 });
@@ -210,9 +228,15 @@ app.get('/items/:id', (req, res) => {
 app.get('/categories', (req, res) => {
   storeService.getCategories()
     .then((data) => {
-      res.render('categories', {
-        data: data,
-      });
+      if (data.length > 0) {
+        res.render('categories', {
+          data: data,
+        });
+      } else {
+        res.render('categories', {
+          message: "no results",
+        });
+      }
     })
     .catch((err) => res.render('categories', { data: err }));
 });
