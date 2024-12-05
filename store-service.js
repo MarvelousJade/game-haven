@@ -50,6 +50,7 @@ module.exports.getPublishedItemsByCategory = async function(category) {
         category: category
       }
     })
+    return items;
   } catch (error) {
     console.log("no resuls returned");
   }
@@ -69,10 +70,13 @@ module.exports.getPublishedItems = async function() {
 
 }
 
-module.exports.getCategories = function() {
-  return new Promise((resolve, reject) => {
-    reject();
-  })
+module.exports.getCategories = async function() {
+  try {
+    const categories = Category.findAll();
+    return categories;
+  } catch (error) {
+    console.log("no results turned");
+  }
 }
 
 function getCurrentDate() {
