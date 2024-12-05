@@ -70,27 +70,27 @@ function getCurrentDate() {
 
 module.exports.addItem = async function(itemData) {
   itemData.published = (itemData.published) ? true : false;
-  for (value in itemData) {
-    if (value == "") value = null;
+  for (const key in itemData) {
+    if (itemData[key] === "") itemData[key] = null;
   }
+  itemData.postDate = new Date();
   try {
-    await sequelize.sync();
     await Item.create({
       body: itemData.body,
       title: itemData.title,
-      postDate: new Date(),
+      postDate: itemData.postDate,
       featureImage: itemData.featureImage,
       published: itemData.published,
       price: itemData.price,
-    })
+    });
   } catch (error) {
+    console.log(error);
     throw new Error("unable to create post");
   }
 }
 
 module.exports.getItemByCategory = async function(category) {
   try {
-    await sequelize.sync();
     const items = await Item.findAll({
       where: {
         category: category
@@ -104,7 +104,6 @@ module.exports.getItemByCategory = async function(category) {
 
 module.exports.getItemsByMinDate = async function(minDateStr) {
   try {
-    await sequelize.sync();
     const { gte } = Sequelize.Op;
     const items = await Item.findAll({
       where: {
@@ -121,7 +120,6 @@ module.exports.getItemsByMinDate = async function(minDateStr) {
 
 module.exports.getItemById = async function(id) {
   try {
-    await sequelize.sync();
     const items = await Item.findAll({
       where: {
         id: id
