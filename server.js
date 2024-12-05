@@ -61,8 +61,13 @@ app.get('/about', (req, res) => {
   res.render('about');
 });
 
-app.get('/items/add', (req, res) => {
-  res.render('addItem');
+app.get('/items/add', async (req, res) => {
+  try {
+    const categories = await storeService.getCategories();
+    res.render('addItem', { categories: categories });
+  } catch {
+    res.render('addItem', { categories: [] });
+  };
 });
 
 
