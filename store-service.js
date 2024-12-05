@@ -43,7 +43,16 @@ module.exports.getAllItems = async function() {
 }
 
 module.exports.getPublishedItemsByCategory = async function(category) {
-
+  try {
+    const items = await Item.findAll({
+      where: {
+        published: true,
+        category: category
+      }
+    })
+  } catch (error) {
+    console.log("no resuls returned");
+  }
 }
 
 module.exports.getPublishedItems = async function() {
