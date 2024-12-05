@@ -35,7 +35,6 @@ module.exports.initialize = function() {
 
 module.exports.getAllItems = async function() {
   try {
-    await sequelize.sync();
     const items = await Item.findAll();
     return items;
   } catch (error) {
@@ -47,10 +46,18 @@ module.exports.getPublishedItemsByCategory = async function(category) {
 
 }
 
-module.exports.getPublishedItems = function() {
-  return new Promise((resolve, reject) => {
-    reject();
-  })
+module.exports.getPublishedItems = async function() {
+  try {
+    const items = await Item.findAll({
+      where: {
+        published: true
+      }
+    })
+    return items;
+  } catch (error) {
+    console.log("no results returned");
+  }
+
 }
 
 module.exports.getCategories = function() {
