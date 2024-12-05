@@ -289,37 +289,42 @@ app.post('/items/add', upload.single("featureImage"), (req, res) => {
   }
 })
 
+app.get('/item/delete/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await storeService.deleteItemById(id);
+    res.redirect('/items');
+  } catch (error) {
+    console.log('In deleting item: ', error);
+    res.status(500).send('Unable to Remove Item');
+  };
+})
+
 app.get('/categories/add', (req, res) => {
   res.render('addCategory');
 })
 
-app.post('/categories/add', (req, res) => {
-  processCategory(req);
+app.post('/categories/add', async (req, res) => {
+  try {
+    const newCategory = await storeService.addCategory(req.body)
+    console.log('New Category Added: ', newCategory);
+    res.redirect('/categories');
 
-  async function processCategory() {
-    try {
-      // TODO: Process the req.body and add it as a new Item before redirecting to /items
-      const newCategory = await storeService.addCategory(req.body)
-      console.log('New Item Added: ', newCategory);
-      res.redirect('/categories');
-
-    } catch (err) {
-      console.error('Error Adding Category; ', err)
-      res.status(500).send("Failed to add the Category. Please try again.");
-    }
+  } catch (err) {
+    console.error('Error Adding Category; ', err)
+    res.status(500).send("Failed to add the Category. Please try again.");
   };
 })
 
 app.get('/categories/delete/:id', async (req, res) => {
   const { id } = req.params;
   try {
-    storeService.deleteCategoryById(id)
+    await storeService.deleteCategoryById(id);
     res.redirect('/categories');
   } catch (error) {
-    console.log('In delete category; ', error);
-    res.status(500).send('Unable to Remove Category')
+    console.log('In deleting category: ', error);
+    res.status(500).send('Unable to Remove Category');
   };
-
 })
 
 app.use((req, res) => {
