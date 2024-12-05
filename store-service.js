@@ -91,11 +91,9 @@ function getCurrentDate() {
 module.exports.addItem = async function(itemData) {
   try {
     itemData.published = (itemData.published) ? true : false;
-
     for (const key in itemData) {
       if (itemData[key] === "") itemData[key] = null;
-    }
-
+    };
     itemData.postDate = new Date();
 
     const item = await Item.create({
@@ -153,4 +151,18 @@ module.exports.getItemById = async function(id) {
   } catch (error) {
     throw new Error("no results returned");
   }
+}
+
+module.exports.addCategory = async function(categoryData) {
+  for (const key in categoryData) {
+    if (categoryData[key] === "") categoryData[key] = null;
+  };
+  try {
+    const category = await Category.create({
+      category: categoryData.category,
+    });
+    return category;
+  } catch (error) {
+    throw new Error("unable to create category");
+  };
 }

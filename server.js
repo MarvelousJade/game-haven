@@ -270,7 +270,7 @@ app.post('/items/add', upload.single("featureImage"), (req, res) => {
     });
   } else {
     processItem("");
-  }
+  };
 
   async function processItem(imageUrl) {
     try {
@@ -284,8 +284,29 @@ app.post('/items/add', upload.single("featureImage"), (req, res) => {
     } catch (err) {
       console.error('Error Adding Item; ', err)
       res.status(500).send("Failed to add the item. Please try again.");
-    }
+    };
   }
+})
+
+app.get('/categories/add', (req, res) => {
+  res.render('addCategory');
+})
+
+app.post('/categories/add', (req, res) => {
+  processCategory(req);
+
+  async function processCategory() {
+    try {
+      // TODO: Process the req.body and add it as a new Item before redirecting to /items
+      const newCategory = await storeService.addCategory(req.body)
+      console.log('New Item Added: ', newCategory);
+      res.redirect('/categories');
+
+    } catch (err) {
+      console.error('Error Adding Category; ', err)
+      res.status(500).send("Failed to add the Category. Please try again.");
+    }
+  };
 })
 
 app.use((req, res) => {
