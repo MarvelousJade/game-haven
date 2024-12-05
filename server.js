@@ -165,9 +165,17 @@ app.get('/items', (req, res) => {
   if (category) {
     storeService.getItemByCategory(category)
       .then((data) => {
-        res.render('items', {
-          data: data,
-        });
+
+        if (data.length > 0) {
+          res.render('items', {
+            data: data,
+          });
+        } else {
+          res.render('items', {
+            message: "no results",
+          });
+        }
+
       })
       .catch((err) => res.render('items', { data: err }));
   } else if (minDate) {
