@@ -88,14 +88,16 @@ app.get("/shop", async (req, res) => {
       items = await storeService.getPublishedItems();
     }
 
+    const plainItems = items.map(item => item.get({ plain: true }));
+
     // sort the published items by itemDate
-    items.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
+    plainItems.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
 
     // get the latest item from the front of the list (element 0)
-    let item = items[0];
+    let item = plainItems[0];
 
     // store the "items" and "item" data in the viewData object (to be passed to the view)
-    viewData.items = items;
+    viewData.items = plainItems;
     viewData.item = item;
   } catch (err) {
     viewData.message = "no results";
@@ -105,8 +107,10 @@ app.get("/shop", async (req, res) => {
     // Obtain the full list of "categories"
     let categories = await storeService.getCategories();
 
+    const plainCategories = categories.map(category => category.get({ plain: true }));
+
     // store the "categories" data in the viewData object (to be passed to the view)
-    viewData.categories = categories;
+    viewData.categories = plainCategories;
   } catch (err) {
     viewData.categoriesMessage = "no results";
   }
@@ -213,9 +217,10 @@ app.get('/items/:id', (req, res) => {
 app.get('/categories', (req, res) => {
   storeService.getCategories()
     .then((data) => {
+      const plainData = data.map(item => item.get({ plain: true }));
       if (data.length > 0) {
         res.render('categories', {
-          data: data,
+          data: plainData,
         });
       } else {
         res.render('categories', {
