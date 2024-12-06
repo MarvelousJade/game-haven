@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-12">
-    <h2><a href="/Items/add" class="btn btn-success pull-right">Add Item</a></h2>
+    <h2><a href="/items/add" class="btn btn-success pull-right">Add Item</a></h2>
     <hr />
       <div class="table-responsive">
         <table class="table">
@@ -21,10 +21,12 @@
               <td>{{id}}</td>
               <td>{{title}}</td>
               <td>{{formatDate postDate}}</td>
-              <td><a href="/items?category={{category}}">{{category}}</td>
+              <td>
+                <a href="/items?category={{Category.id}}">{{Category.category}}</a>
+              </td>
               <td>{{price}}</td>
               <td>{{published}}</td>
-              <td><a href="/item/delete/{{id}}" class="btn btn-danger">remove</td>
+              <td><a href="/items/delete/{{id}}" class="btn btn-danger">remove</td>
             </tr>
             {{/each}}
           </tbody>

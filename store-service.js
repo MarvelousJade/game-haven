@@ -5,29 +5,37 @@ let sequelize = new Sequelize('SenecaDB', 'SenecaDB_owner', '7BDIwiSykM9b', {
   dialect: 'postgres',
   port: 5432,
   dialectOptions: {
-    ssl: { rejectunAuthorized: false }
+    ssl: { rejectUnauthorized: false }
   },
-  query: { raw: true }
-});
-
-const Item = sequelize.define('Item', {
-  body: Sequelize.TEXT,
-  title: Sequelize.STRING,
-  postDate: Sequelize.DATE,
-  featureImage: Sequelize.STRING,
-  published: Sequelize.BOOLEAN,
-  price: Sequelize.DOUBLE,
+  //query: { raw: true }
 });
 
 const Category = sequelize.define('Category', {
   category: Sequelize.STRING,
 });
 
-Item.belongsTo(Category, { foreignkeys: 'category' });
+const Item = sequelize.define('Item', {
+  body: Sequelize.TEXT,
+  title: Sequelize.STRING,
+  postDate: Sequelize.DATE,
+  categoryId: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: Category,
+      key: 'id',
+    },
+  },
+  featureImage: Sequelize.STRING,
+  published: Sequelize.BOOLEAN,
+  price: Sequelize.DOUBLE,
+});
+
+Item.belongsTo(Category, { foreignKey: 'categoryId' });
+Category.hasMany(Item, { foreignKey: 'categoryId' });
 
 module.exports.initialize = function() {
   return new Promise((resolve, reject) => {
-    sequelize.sync().then(resolve)
+    sequelize.sync({ alter: true }).then(resolve)
       .catch(error => reject("Unable to sync the database"));
   })
 }
@@ -35,20 +43,21 @@ module.exports.initialize = function() {
 
 module.exports.getAllItems = async function() {
   try {
-    const items = await Item.findAll();
+    const items = await Item.findAll({ include: Category });
     return items;
   } catch (error) {
     throw new Error("no results returned");
   }
 }
 
-module.exports.getPublishedItemsByCategory = async function(category) {
+module.exports.getPublishedItemsByCategory = async function(categoryId) {
   try {
     const items = await Item.findAll({
       where: {
         published: true,
-        category: category
-      }
+        categoryId: categoryId,
+      },
+      include: Category,
     })
     return items;
   } catch (error) {
@@ -61,13 +70,13 @@ module.exports.getPublishedItems = async function() {
     const items = await Item.findAll({
       where: {
         published: true
-      }
+      },
+      include: Category,
     })
     return items;
   } catch (error) {
-    console.log("no results returned");
+    console.log("no results returned", error);
   }
-
 }
 
 module.exports.getCategories = async function() {
@@ -100,6 +109,7 @@ module.exports.addItem = async function(itemData) {
       body: itemData.body,
       title: itemData.title,
       postDate: itemData.postDate,
+      categoryId: itemData.categoryId,
       featureImage: itemData.featureImage,
       published: itemData.published,
       price: itemData.price,
@@ -111,11 +121,11 @@ module.exports.addItem = async function(itemData) {
   }
 }
 
-module.exports.getItemByCategory = async function(category) {
+module.exports.getItemByCategory = async function(categoryId) {
   try {
     const items = await Item.findAll({
       where: {
-        category: category
+        categoryId: categoryId,
       },
     });
     return items;
@@ -142,10 +152,11 @@ module.exports.getItemsByMinDate = async function(minDateStr) {
 
 module.exports.getItemById = async function(id) {
   try {
-    const items = await Item.findAll({
+    const items = await Item.findOne({
       where: {
         id: id
-      }
+      },
+      include: Category,
     })
     return items;
   } catch (error) {

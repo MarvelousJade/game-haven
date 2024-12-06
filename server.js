@@ -166,50 +166,29 @@ app.get('/shop/:id', async (req, res) => {
   res.render("shop", { data: viewData })
 });
 
-app.get('/items', (req, res) => {
+app.get('/items', async (req, res) => {
   const { category, minDate } = req.query;
-  if (category) {
-    storeService.getItemByCategory(category)
-      .then((data) => {
-        if (data.length > 0) {
-          res.render('items', {
-            data: data,
-          });
-        } else {
-          res.render('items', {
-            message: "no results",
-          });
-        }
-      })
-      .catch((err) => res.render('items', { data: err }));
-  } else if (minDate) {
-    storeService.getItemsByMinDate(minDate)
-      .then((data) => {
-        if (data.length > 0) {
-          res.render('items', {
-            data: data,
-          });
-        } else {
-          res.render('items', {
-            message: "no results",
-          });
-        }
-      })
-      .catch((err) => res.render('items', { data: err }));
-  } else {
-    storeService.getPublishedItems()
-      .then((data) => {
-        if (data.length > 0) {
-          res.render('items', {
-            data: data,
-          });
-        } else {
-          res.render('items', {
-            message: "no results",
-          });
-        }
-      })
-      .catch((err) => res.render('items', { data: err }));
+  try {
+    let data;
+    if (category) {
+      data = await storeService.getItemByCategory(category);
+    } else if (minDate) {
+      data = await storeService.getItemsByMinDate(minDate);
+    } else {
+      data = await storeService.getPublishedItems();
+    }
+
+    // Convert Sequelize model instances to plain objects
+    const plainData = data.map(item => item.get({ plain: true }));
+
+    if (plainData && plainData.length > 0) {
+      res.render('items', { data: plainData });
+    } else {
+      res.render('items', { message: "no results" });
+    }
+  } catch (err) {
+    logger.error("Error in /items route:", err);
+    res.render('items', { message: "An error occurred while fetching items." });
   }
 });
 
@@ -294,7 +273,7 @@ app.post('/items/add', upload.single("featureImage"), (req, res) => {
   }
 })
 
-app.get('/item/delete/:id', async (req, res) => {
+app.get('/items/delete/:id', async (req, res) => {
   const { id } = req.params;
   try {
     await storeService.deleteItemById(id);
