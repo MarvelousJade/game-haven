@@ -64,7 +64,8 @@ app.get('/about', (req, res) => {
 app.get('/items/add', async (req, res) => {
   try {
     const categories = await storeService.getCategories();
-    res.render('addItem', { categories: categories });
+    const plainCategories = categories.map(item => item.get({ plain: true }));
+    res.render('addItem', { categories: plainCategories });
   } catch {
     res.render('addItem', { categories: [] });
   };
