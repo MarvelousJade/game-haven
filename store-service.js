@@ -150,19 +150,35 @@ module.exports.getItemsByMinDate = async function(minDateStr) {
   }
 }
 
+
 module.exports.getItemById = async function(id) {
+  // Validate that id is a positive integer
+  if (!Number.isInteger(Number(id)) || Number(id) <= 0) {
+    throw new Error("Invalid item ID");
+  }
+
   try {
-    const items = await Item.findOne({
+    const item = await Item.findOne({
       where: {
         id: id
       },
-      include: Category,
-    })
-    return items;
+      include: {
+        model: Category,
+        attributes: ['id', 'category']
+      },
+      raw: false // Set to true if you prefer plain objects
+    });
+
+    if (!item) {
+      throw new NotFoundError(`Item with id ${id} not found`);
+    }
+
+    return item; // Returns a Sequelize instance or plain object based on 'raw'
   } catch (error) {
-    throw new Error("no results returned");
+    throw error; // Re-throw the error for upstream handling
   }
 }
+
 
 module.exports.deleteItemById = async function(id) {
   try {

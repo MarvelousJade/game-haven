@@ -140,11 +140,13 @@ app.get('/shop/:id', async (req, res) => {
       items = await storeService.getPublishedItems();
     }
 
+    const plainItems = items.map(item => item.get({ plain: true }));
+
     // sort the published items by postDate
-    items.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
+    plainItems.sort((a, b) => new Date(b.postDate) - new Date(a.postDate));
 
     // store the "items" and "item" data in the viewData object (to be passed to the view)
-    viewData.items = items;
+    viewData.items = plainItems;
 
   } catch (err) {
     viewData.message = "no results";
@@ -152,7 +154,18 @@ app.get('/shop/:id', async (req, res) => {
 
   try {
     // Obtain the item by "id"
-    viewData.item = await storeService.getItemById(req.params.id);
+    item = await storeService.getItemById(req.params.id);
+    if (item) {
+      // Convert Sequelize model instance to plain object
+      const plainItem = item.get({ plain: true });
+
+      // Handle price field
+      if (isNaN(plainItem.price) || plainItem.price === null) {
+        plainItem.price = "N/A";
+      }
+
+      viewData.item = plainItem;
+    }
   } catch (err) {
     viewData.message = "no results";
   }
@@ -161,8 +174,10 @@ app.get('/shop/:id', async (req, res) => {
     // Obtain the full list of "categories"
     let categories = await storeService.getCategories();
 
+    const plainCategories = categories.map(category => category.get({ plain: true }));
+
     // store the "categories" data in the viewData object (to be passed to the view)
-    viewData.categories = categories;
+    viewData.categories = plainCategories;
   } catch (err) {
     viewData.categoriesMessage = "no results"
   }
