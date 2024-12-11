@@ -5,7 +5,7 @@ I declare that this assignment is my own work in accordance with Seneca  Academi
 
 Name: Shaoyu Fan
 Student ID: 125988238 
-Date: 12/05/2024
+Date: 12/06/2024
 Render Web App URL: https://web322-app-5d7z.onrender.com
 GitHub Repository URL: https://github.com/MarvelousJade/web322-app
 
@@ -21,6 +21,7 @@ const exphbs = require('express-handlebars');
 const { equal } = require('assert');
 const helpers = require('./helpers');
 const { resolve } = require('dns');
+const authData = require("./store-service");
 
 cloudinary.config({
   cloud_name: 'drgolqrkr',
@@ -337,8 +338,9 @@ app.use((req, res) => {
 })
 
 storeService.initialize()
+  .then(authData.initialize())
   .then(
     app.listen(HTTP_PORT, () => console.log(`Express http server listening on ${HTTP_PORT}`))
   )
-  .catch((err) => console.log(err));
+  .catch((err) => console.log(`unable to start server ${err}`));
 
