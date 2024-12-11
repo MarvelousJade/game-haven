@@ -22,6 +22,7 @@ const { equal } = require('assert');
 const helpers = require('./helpers');
 const { resolve } = require('dns');
 const authData = require("./store-service");
+const clientSessions = require('client-sessions');
 
 cloudinary.config({
   cloud_name: 'drgolqrkr',
@@ -54,6 +55,28 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.use(
+  clientSessions({
+    cookieName: 'session',
+    secret: 'feioIOJI&*^y983hjkdsfsAd',
+    duration: 30 * 60 * 1000,
+    activeDuration: 5 * 60 * 1000,
+  })
+);
+
+app.use(function(req, res, next) {
+  res.locals.session = req.session;
+  next();
+});
+
+function ensureLogin(req, res, next) {
+  if (!req.session.user) {
+    res.redirect('/login');
+  } else {
+    next();
+  }
+};
+
 app.get('/', (req, res) => {
   res.redirect('/shop');
 });
@@ -62,7 +85,7 @@ app.get('/about', (req, res) => {
   res.render('about');
 });
 
-app.get('/items/add', async (req, res) => {
+app.get('/items/add', ensureLogin, async (req, res) => {
   try {
     const categories = await storeService.getCategories();
     const plainCategories = categories.map(item => item.get({ plain: true }));
@@ -73,7 +96,7 @@ app.get('/items/add', async (req, res) => {
 });
 
 
-app.get("/shop", async (req, res) => {
+app.get("/shop", ensureLogin, async (req, res) => {
   // Declare an object to store properties for the view
   let viewData = {};
 
@@ -122,7 +145,7 @@ app.get("/shop", async (req, res) => {
 });
 
 
-app.get('/shop/:id', async (req, res) => {
+app.get('/shop/:id', ensureLogin, async (req, res) => {
 
   // Declare an object to store properties for the view
   let viewData = {};
@@ -187,7 +210,7 @@ app.get('/shop/:id', async (req, res) => {
   res.render("shop", { data: viewData })
 });
 
-app.get('/items', async (req, res) => {
+app.get('/items', ensureLogin, async (req, res) => {
   const { category, minDate } = req.query;
   try {
     let data;
@@ -213,7 +236,7 @@ app.get('/items', async (req, res) => {
   }
 });
 
-app.get('/items/:id', (req, res) => {
+app.get('/items/:id', ensureLogin, (req, res) => {
   const { id } = req.params;
 
   storeService.getItemById(id)
@@ -231,7 +254,7 @@ app.get('/items/:id', (req, res) => {
     .catch((err) => console.log(`{message: ${err}}`));
 });
 
-app.get('/categories', (req, res) => {
+app.get('/categories', ensureLogin, (req, res) => {
   storeService.getCategories()
     .then((data) => {
       const plainData = data.map(item => item.get({ plain: true }));
@@ -248,7 +271,7 @@ app.get('/categories', (req, res) => {
     .catch((err) => res.render('categories', { data: err }));
 });
 
-app.post('/items/add', upload.single("featureImage"), (req, res) => {
+app.post('/items/add', ensureLogin, upload.single("featureImage"), (req, res) => {
   if (req.file) {
     let streamUpload = (req) => {
       return new Promise((resolve, reject) => {
@@ -295,7 +318,7 @@ app.post('/items/add', upload.single("featureImage"), (req, res) => {
   }
 })
 
-app.get('/items/delete/:id', async (req, res) => {
+app.get('/items/delete/:id', ensureLogin, async (req, res) => {
   const { id } = req.params;
   try {
     await storeService.deleteItemById(id);
@@ -306,11 +329,11 @@ app.get('/items/delete/:id', async (req, res) => {
   };
 })
 
-app.get('/categories/add', (req, res) => {
+app.get('/categories/add', ensureLogin, (req, res) => {
   res.render('addCategory');
 })
 
-app.post('/categories/add', async (req, res) => {
+app.post('/categories/add', ensureLogin, async (req, res) => {
   try {
     const newCategory = await storeService.addCategory(req.body)
     console.log('New Category Added: ', newCategory);
@@ -322,7 +345,7 @@ app.post('/categories/add', async (req, res) => {
   };
 })
 
-app.get('/categories/delete/:id', async (req, res) => {
+app.get('/categories/delete/:id', ensureLogin, async (req, res) => {
   const { id } = req.params;
   try {
     await storeService.deleteCategoryById(id);
