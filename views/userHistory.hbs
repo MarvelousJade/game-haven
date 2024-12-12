@@ -1,24 +1,24 @@
-<table>
-  <h2>{{userName}} ( {{email}} ) History</h2>
-  <thead>
-    <tr>
-      <th scope="col">Login Date/Time</th>
-      <th scope="col">Client Information</th>
-    </tr>
-  </thead>
-  <tbody>
-    {{#each session.user.loginHistory}}
-    <tr>
-      <td>{{dateTime}}</td>
-      <td>{{userAgent}}</td>
-    </tr>
-    {{/each}} 
-  </tbody>
-  <tfoot>
-    <tr>
-      <th scope="row" colspan="2">Average age</th>
-      <td>33</td>
-    </tr>
-  </tfoot>
-</table>
+<div class="container">
+  <h2>{{session.user.userName}} ( {{session.user.email}} ) History</h2>
 
+  {{#if (session.user.loginHistory && session.user.loginHistory.length > 0)}}
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Login Date/Time</th>
+          <th>Client Information</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each session.user.loginHistory}}
+          <tr>
+            <td>{{dateTime}}</td>
+            <td>{{userAgent}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  {{else}}
+    <p>No login history available.</p>
+  {{/if}}
+</div>

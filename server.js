@@ -55,14 +55,12 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.use(
-  clientSessions({
-    cookieName: 'session',
-    secret: 'feioIOJI&*^y983hjkdsfsAd',
-    duration: 30 * 60 * 1000,
-    activeDuration: 5 * 60 * 1000,
-  })
-);
+app.use(clientSessions({
+  cookieName: 'session',
+  secret: 'feioIOJI&*^y983hjkdsfsAd',
+  duration: 30 * 60 * 1000,
+  activeDuration: 5 * 60 * 1000,
+}));
 
 app.use(function(req, res, next) {
   res.locals.session = req.session;
@@ -356,10 +354,6 @@ app.get('/categories/delete/:id', ensureLogin, async (req, res) => {
   };
 })
 
-app.use((req, res) => {
-  res.status(404).sendFile(path.join(__dirname, 'views/404.html'));
-})
-
 app.get('/login', (req, res) => {
   res.render('login');
 })
@@ -372,9 +366,7 @@ app.post('/register', async (req, res) => {
   try {
     const userData = req.body;
     await authData.registerUser(userData);
-    res.render('register', {
-      successMessage: 'User created',
-    });
+    res.render('register', { successMessage: 'User created' });
   } catch (err) {
     res.render('register', {
       errorMessage: err,
@@ -415,6 +407,10 @@ app.get('/logout', (req, res) => {
 
 app.get('/userHistory', ensureLogin, (req, res) => {
   res.render('userHistory');
+})
+
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, 'views/404.html'));
 })
 
 storeService.initialize()
