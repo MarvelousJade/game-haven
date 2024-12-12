@@ -21,7 +21,7 @@ const exphbs = require('express-handlebars');
 const { equal } = require('assert');
 const helpers = require('./helpers');
 const { resolve } = require('dns');
-const authData = require("./store-service");
+const authData = require("./auth-service");
 const clientSessions = require('client-sessions');
 
 cloudinary.config({
