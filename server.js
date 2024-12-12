@@ -360,6 +360,63 @@ app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, 'views/404.html'));
 })
 
+app.get('/login', (req, res) => {
+  res.render('login');
+})
+
+app.get('/register', (req, res) => {
+  res.render('register');
+})
+
+app.post('/register', async (req, res) => {
+  try {
+    const userData = req.body;
+    await authData.registerUser(userData);
+    res.render('register', {
+      successMessage: 'User created',
+    });
+  } catch (err) {
+    res.render('register', {
+      errorMessage: err,
+      userName: userData.userName,
+    })
+  };
+})
+
+app.post('/login', async (req, res) => {
+  try {
+    req.body.userAgent = req.get('User-Agent');
+
+    const userData = req.body;
+
+    const authenticatedUser = await authData.checkUser(userData);
+
+    req.session.user = {
+      userName: authenticatedUser.userName,
+      email: authenticatedUser.email,
+      loginHistory: authenticatedUser.loginHistory
+    }
+
+    res.redirect('/items');
+  } catch (err) {
+
+    res.render('login', {
+      errorMessage: err,
+      userName: userData.userName,
+    })
+
+  };
+});
+
+app.get('/logout', (req, res) => {
+  req.session.reset();
+  res.redirect('/');
+})
+
+app.get('/userHistory', ensureLogin, (req, res) => {
+  res.render('userHistory');
+})
+
 storeService.initialize()
   .then(authData.initialize())
   .then(
