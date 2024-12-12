@@ -34,10 +34,14 @@ Item.belongsTo(Category, { foreignKey: 'categoryId' });
 Category.hasMany(Item, { foreignKey: 'categoryId' });
 
 module.exports.initialize = function() {
-  return new Promise((resolve, reject) => {
-    sequelize.sync({ alter: true }).then(resolve)
-      .catch(error => reject("Unable to sync the database"));
-  })
+  return sequelize.sync()
+    .then(() => {
+      console.log("Database synced successfully");
+    })
+    .catch((error) => {
+      reject("Unable to sync the database")
+      throw error;
+    });
 }
 
 
