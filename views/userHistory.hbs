@@ -7,17 +7,17 @@
         <table class="table table-striped">
           <thead>
             <tr>
-                <th>Login Date/Time</th>
-                <th>Client Information</th>
+              <th>Login Date/Time</th>
+              <th>Client Information</th>
             </tr>
           </thead>
           <tbody>
-              {{#each session.user.loginHistory}}
-                  <tr>
-                      <td>{{formatDate dateTime}}</td>
-                      <td>{{userAgent}}</td>
-                  </tr>
-              {{/each}}
+            {{#each session.user.loginHistory}}
+              <tr>
+                <td>{{formatDate dateTime}}</td>
+                <td>{{userAgent}}</td>
+              </tr>
+            {{/each}}
           </tbody>
         </table>
       </div>
