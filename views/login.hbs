@@ -1,0 +1,17 @@
+<form action="/login" method="post">
+  <div>
+    <input type="text" name="userName" id="userName" placeholder="User Name">
+  </div>
+
+  <div>
+    <input type="password" name="password" id="password" placeholder="Password">
+  </div>
+
+  <button type="submit">Register</button>
+
+  {{#unless errorMessage}}
+    <div class="alert alert-danger">
+      <strong>Error:</strong>{{errorMessage}}
+    </div>
+  {{/unless}}
+</form>
