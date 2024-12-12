@@ -1,24 +1,39 @@
-<div class="container">
-  <h2>{{session.user.userName}} ( {{session.user.email}} ) History</h2>
+<div class="container mt-5">
+  <h2 class="mb-4">{{session.user.userName}} ({{session.user.email}}) Login History</h2>
 
-  {{#if (session.user.loginHistory && session.user.loginHistory.length > 0)}}
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Login Date/Time</th>
-          <th>Client Information</th>
-        </tr>
-      </thead>
-      <tbody>
-        {{#each session.user.loginHistory}}
-          <tr>
-            <td>{{dateTime}}</td>
-            <td>{{userAgent}}</td>
-          </tr>
-        {{/each}}
-      </tbody>
-    </table>
+  {{#if session.user.loginHistory}}
+    {{#if session.user.loginHistory.length}}
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+                <th>Login Date/Time</th>
+                <th>Client Information</th>
+            </tr>
+          </thead>
+          <tbody>
+              {{#each session.user.loginHistory}}
+                  <tr>
+                      <td>{{formatDate dateTime}}</td>
+                      <td>{{userAgent}}</td>
+                  </tr>
+              {{/each}}
+          </tbody>
+        </table>
+      </div>
+    {{else}}
+      <div class="alert alert-info" role="alert">
+          No login history available.
+      </div>
+    {{/if}}
   {{else}}
-    <p>No login history available.</p>
+    <div class="alert alert-info" role="alert">
+      No login history available.
+    </div>
   {{/if}}
+
+  <div class="mt-4">
+    <a href="/items" class="btn btn-primary">Back to Items</a>
+    <a href="/logout" class="btn btn-danger">Logout</a>
+  </div>
 </div>

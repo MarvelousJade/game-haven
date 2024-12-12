@@ -406,7 +406,9 @@ app.get('/logout', (req, res) => {
 })
 
 app.get('/userHistory', ensureLogin, (req, res) => {
-  res.render('userHistory');
+  res.render('userHistory', {
+    user: req.session.user,
+  });
 })
 
 app.use((req, res) => {
