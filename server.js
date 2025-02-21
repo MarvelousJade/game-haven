@@ -349,8 +349,9 @@ app.get('/register', (req, res) => {
 })
 
 app.post('/register', async (req, res) => {
+  const userData = req.body;
+
   try {
-    const userData = req.body;
     await authService.registerUser(userData);
     res.render('register', { successMessage: 'User created' });
   } catch (err) {
@@ -362,28 +363,24 @@ app.post('/register', async (req, res) => {
 })
 
 app.post('/login', async (req, res) => {
-  try {
-    req.body.userAgent = req.get('User-Agent');
-
-    const userData = req.body;
-
-    const authenticatedUser = await authService.checkUser(userData);
-
-    req.session.user = {
-      userName: authenticatedUser.userName,
-      email: authenticatedUser.email,
-      loginHistory: authenticatedUser.loginHistory
-    }
-
-    res.redirect('/items');
-  } catch (err) {
-
-    res.render('login', {
-      errorMessage: err,
-      userName: userData.userName,
-    })
-
+  const userData = {
+    userName: req.body.userName,
+    password: req.body.password,
+    userAgent: req.get('User-Agent'),
   };
+
+  authService.checkUser(userData)
+    .then((authenticatedUser) => {
+      req.session.user = {
+        userName: authenticatedUser.userName,
+        email: authenticatedUser.email,
+        loginHistory: authenticatedUser.loginHistory
+      };
+      res.redirect('/items');
+    })
+    .catch((err) => {
+      res.render('login', { errorMessage: err, userName: req.body.userName });
+    });
 });
 
 app.get('/logout', (req, res) => {
