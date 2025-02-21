@@ -1,39 +1,25 @@
-/*********************************************************************************
-
-WEB322 – Assignment 05
-I declare that this assignment is my own work in accordance with Seneca  Academic Policy.  No part *  of this assignment has been copied manually or electronically from any other source (including 3rd party web sites) or distributed to other students.
-
-Name: Shaoyu Fan
-Student ID: 125988238 
-Date: 12/06/2024
-Render Web App URL: https://web322-app-5d7z.onrender.com
-GitHub Repository URL: https://github.com/MarvelousJade/web322-app
-
-********************************************************************************/
-
 const path = require('path');
 const express = require('express'); // "require" the Express module
-const storeService = require('./store-service');
 const multer = require("multer");
 const cloudinary = require('cloudinary').v2;
 const streamifier = require('streamifier');
 const exphbs = require('express-handlebars');
-const { equal } = require('assert');
-const helpers = require('./helpers');
-const { resolve } = require('dns');
-const authData = require("./auth-service");
 const clientSessions = require('client-sessions');
+const config = require('./config')
+const storeService = require('./store-service');
+const authService = require("./auth-service");
+const helpers = require('./helpers');
 
 cloudinary.config({
-  cloud_name: 'drgolqrkr',
-  api_key: '437251579173388',
-  api_secret: 'DkXsDC_L263_JqGObb4tua7T5Ts',
+  cloud_name: config.CLOUDINARY.cloud_name,
+  api_key: config.CLOUDINARY.api_key,
+  api_secret: config.CLOUDINARY.api_secret,
   secure: true
 });
 
 const upload = multer();
 const app = express(); // obtain the "app" object
-const HTTP_PORT = process.env.PORT || 8080; // assign a port
+const HTTP_PORT = config.PORT; // assign a port
 
 app.use(express.static('public'));
 app.use(express.urlencoded({ extended: true }));
@@ -57,7 +43,7 @@ app.use(function(req, res, next) {
 
 app.use(clientSessions({
   cookieName: 'session',
-  secret: 'feioIOJI&*^y983hjkdsfsAd',
+  secret: config.SESSION_SECRET,
   duration: 30 * 60 * 1000,
   activeDuration: 5 * 60 * 1000,
 }));
@@ -365,7 +351,7 @@ app.get('/register', (req, res) => {
 app.post('/register', async (req, res) => {
   try {
     const userData = req.body;
-    await authData.registerUser(userData);
+    await authService.registerUser(userData);
     res.render('register', { successMessage: 'User created' });
   } catch (err) {
     res.render('register', {
@@ -381,7 +367,7 @@ app.post('/login', async (req, res) => {
 
     const userData = req.body;
 
-    const authenticatedUser = await authData.checkUser(userData);
+    const authenticatedUser = await authService.checkUser(userData);
 
     req.session.user = {
       userName: authenticatedUser.userName,
@@ -415,10 +401,18 @@ app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, 'views/404.html'));
 })
 
-storeService.initialize()
-  .then(authData.initialize())
-  .then(
-    app.listen(HTTP_PORT, () => console.log(`Express http server listening on ${HTTP_PORT}`))
-  )
-  .catch((err) => console.log(`unable to start server ${err}`));
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).render('error', { error: err });
+});
 
+// Initialize services and start the server
+Promise.all([storeService.initialize(), authService.initialize()])
+  .then(() => {
+    app.listen(HTTP_PORT, () => {
+      console.log(`Server is running on port ${HTTP_PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to initialize services: ", err);
+  });

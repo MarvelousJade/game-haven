@@ -1,14 +1,18 @@
 const Sequelize = require('sequelize');
+const config = require('./config');
 
-let sequelize = new Sequelize('SenecaDB', 'SenecaDB_owner', '7BDIwiSykM9b', {
-  host: 'ep-super-dream-a5hb2oj6.us-east-2.aws.neon.tech',
-  dialect: 'postgres',
-  port: 5432,
-  dialectOptions: {
-    ssl: { rejectUnauthorized: false }
-  },
-  //query: { raw: true }
-});
+let sequelize = new Sequelize(
+  config.PG.database,
+  config.PG.user,
+  config.PG.password,
+  {
+    host: config.PG.host,
+    dialect: config.PG.dialect,
+    port: config.PG.port,
+    dialectOptions: config.PG.dialectOptions,
+    //query: { raw: true }
+  }
+);
 
 const Category = sequelize.define('Category', {
   category: Sequelize.STRING,
@@ -33,17 +37,14 @@ const Item = sequelize.define('Item', {
 Item.belongsTo(Category, { foreignKey: 'categoryId' });
 Category.hasMany(Item, { foreignKey: 'categoryId' });
 
-module.exports.initialize = function() {
-  return sequelize.sync()
-    .then(() => {
-      console.log("Database synced successfully");
-    })
-    .catch((error) => {
-      reject("Unable to sync the database")
-      throw error;
-    });
+module.exports.initialize = async function() {
+  try {
+    await sequelize.sync();
+    console.log("Database synced successfully");
+  } catch (error) {
+    throw new Error("Unable to sync the database" + error.message);
+  }
 }
-
 
 module.exports.getAllItems = async function() {
   try {
@@ -79,7 +80,7 @@ module.exports.getPublishedItems = async function() {
     })
     return items;
   } catch (error) {
-    console.log("no results returned", error);
+    throw new Error("Error fetching published items: " + error.message);
   }
 }
 
@@ -120,8 +121,7 @@ module.exports.addItem = async function(itemData) {
     });
     return item;
   } catch (error) {
-    console.log("Error in addItem: ", error);
-    throw new Error("unable to create post");
+    throw new Error("Unable to create post" + error.message);
   }
 }
 
@@ -174,7 +174,7 @@ module.exports.getItemById = async function(id) {
     });
 
     if (!item) {
-      throw new NotFoundError(`Item with id ${id} not found`);
+      throw new Error(`Item with id ${id} not found`);
     }
 
     return item; // Returns a Sequelize instance or plain object based on 'raw'
