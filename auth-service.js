@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const Schema = mongoose.Schema;
+const config = require('./config');
 
 const userSchema = new Schema({
   userName: { type: String, unique: true, required: true },
@@ -14,20 +15,18 @@ const userSchema = new Schema({
 
 let User;
 
-module.exports.initialize = function() {
-  return new Promise(function(resolve, reject) {
-    let db = mongoose.createConnection("mongodb+srv://shaoyu:CjLLgtHfsUTZWXnF@cluster0.nxmdk.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
-
-    db.on('error', (err) => {
-      reject(err);
+module.exports.initialize = async function() {
+  try {
+    let db = mongoose.createConnection(config.MONGODB_URI);
+    await new Promise((resolve, reject) => {
+      db.on('error', reject);
+      db.once('open', resolve);
     });
-
-    db.once('open', () => {
-      User = db.model("users", userSchema);
-      resolve();
-    });
-  });
-};
+    User = db.model("users", userSchema);
+  } catch (err) {
+    throw new Error("Failed to connect to MongoDB: " + err.message);
+  }
+}
 
 module.exports.registerUser = function(userData) {
   return new Promise((resolve, reject) => {
