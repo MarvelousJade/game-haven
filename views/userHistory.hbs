@@ -1,39 +1,44 @@
 <div class="container mt-5">
-  <h2 class="mb-4">{{session.user.userName}} ({{session.user.email}}) Login History</h2>
-
-  {{#if session.user.loginHistory}}
-    {{#if session.user.loginHistory.length}}
-      <div class="table-responsive">
-        <table class="table table-striped">
-          <thead>
-            <tr>
-              <th>Login Date/Time</th>
-              <th>Client Information</th>
-            </tr>
-          </thead>
-          <tbody>
-            {{#each session.user.loginHistory}}
-              <tr>
-                <td>{{formatDate dateTime}}</td>
-                <td>{{userAgent}}</td>
-              </tr>
-            {{/each}}
-          </tbody>
-        </table>
-      </div>
-    {{else}}
-      <div class="alert alert-info" role="alert">
-          No login history available.
-      </div>
-    {{/if}}
-  {{else}}
-    <div class="alert alert-info" role="alert">
-      No login history available.
+  <div class="card">
+    <div class="card-header">
+      <h4>{{session.user.userName}} ({{session.user.email}}) Login History</h4>
     </div>
-  {{/if}}
-
-  <div class="mt-4">
-    <a href="/items" class="btn btn-primary">Back to Items</a>
-    <a href="/logout" class="btn btn-danger">Logout</a>
+    <div class="card-body">
+      {{#if session.user.loginHistory}}
+        {{#if session.user.loginHistory.length}}
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Login Date/Time</th>
+                  <th>Client Information</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each session.user.loginHistory}}
+                <tr>
+                  <td>{{formatDate dateTime}}</td>
+                  <td>{{userAgent}}</td>
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
+        {{else}}
+          <div class="alert alert-info" role="alert">
+            No login history available.
+          </div>
+        {{/if}}
+      {{else}}
+        <div class="alert alert-info" role="alert">
+          No login history available.
+        </div>
+      {{/if}}
+    </div>
+    <div class="card-footer text-end">
+      <a href="/items" class="btn btn-primary">Back to Items</a>
+      <a href="/logout" class="btn btn-danger">Logout</a>
+    </div>
   </div>
 </div>
+

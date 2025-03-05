@@ -1,19 +1,26 @@
-<form method="post" action="/categories/add">
-  <fieldset>
-    <legend>Category Content</legend>
-    <div class="row">
-      <div class="col-md-12">
-        <div class="form-group">
-          <label for="category">Category Name:</label>
-          <input class="form-control" id="category" name="category" type="text" />
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Add Category</h4>
+        </div>
+        <div class="card-body">
+          <form method="post" action="/categories/add">
+            <div class="form-floating mb-3">
+              <input 
+                type="text" 
+                class="form-control" 
+                id="category" 
+                name="category" 
+                placeholder="Category Name" 
+                required>
+              <label for="category">Category Name</label>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Add Category</button>
+          </form>
         </div>
       </div>
     </div>
-  </fieldset>
-  <hr />
-  <input
-    type="submit"
-    class="btn btn-primary pull-right"
-    value="Add Cagetory"
-  /><br /><br /><br />
-</form>
+  </div>
+</div>

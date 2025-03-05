@@ -1,65 +1,57 @@
-<div class="row">
-  <section class="main col-md-9">
-    {{#if data.item}}
-    <item>
-      <div class="row">
-        <div class="col-4">
-          <h2>{{data.item.title}}</h2>
-          <img
-            src="{{data.item.featureImage}}"
-            alt="feature Image"
-            style="width:100%"
-          />
-        </div>
-
-        <div class="col-8"><br />
-          <br />
-          <div class="row">
-            <div class="col-12">
-
-              {{{data.item.body}}}
-
-              <br /><br />
-
-              <strong>Price:</strong>
-              $ {{data.item.price}}<br />
-              <strong>Category:</strong>
-              {{data.item.Category.category}}<br />
-              <strong>Last Updated:</strong>
-              {{formatDate data.item.postDate}}
+<div class="container mt-5">
+  <div class="row">
+    <!-- Main Content -->
+    <section class="col-md-9">
+      {{#if data.item}}
+      <div class="card mb-4 shadow-sm">
+        <div class="row g-0">
+          <div class="col-md-4">
+            <img src="{{data.item.featureImage}}" class="img-fluid rounded-start" alt="{{data.item.title}}">
+          </div>
+          <div class="col-md-8">
+            <div class="card-body">
+              <h3 class="card-title">{{data.item.title}}</h3>
+              <p class="card-text">{{{data.item.body}}}</p>
+              <p class="card-text">
+                <strong>Price:</strong> ${{data.item.price}}<br>
+                <strong>Category:</strong> {{data.item.Category.category}}<br>
+                <strong>Last Updated:</strong> {{formatDate data.item.postDate}}
+              </p>
             </div>
           </div>
         </div>
       </div>
-     {{else}}
-      <!-- Message when no post is available -->
-      <div class="col-md-12 text-center">
+      {{else}}
+      <div class="alert alert-info text-center">
         <h2>{{message}}</h2>
         <p>Please try another Post / Category</p>
       </div>
       {{/if}}
-  </section>
-
-  <aside class="col-md-3">
-    {{#if data.items}}
-    <br /><br />
-    <h4>Items</h4>
-
-    {{#each data.items}}
-    <ul class="list-group">
-      <a href="/shop/{{id}}?category={{categoryId}}" class="list-group-item">{{title}}</a>
-    </ul>
-    {{/each}}
-    {{/if}}
-
-    {{#if data.categories}}
-    <h4>Categories</h4>
+    </section>
     
-    {{#each data.categories}}
-    <ul class="list-group">
-      <a href="/shop?category={{id}}" class="list-group-item">{{category}}</a>
-    </ul>
-    {{/each}}
-    {{/if}}
-  </aside>
+    <!-- Sidebar -->
+    <aside class="col-md-3">
+      {{#if data.items}}
+      <div class="mb-4">
+        <h5>Items</h5>
+        <div class="list-group">
+          {{#each data.items}}
+          <a href="/shop/{{id}}?category={{categoryId}}" class="list-group-item list-group-item-action">{{title}}</a>
+          {{/each}}
+        </div>
+      </div>
+      {{/if}}
+      {{#if data.categories}}
+      <div>
+        <h5>Categories</h5>
+        <div class="list-group">
+          {{#each data.categories}}
+          <a href="/shop?category={{id}}" class="list-group-item list-group-item-action">{{category}}</a>
+          {{/each}}
+        </div>
+      </div>
+      {{/if}}
+    </aside>
+  </div>
 </div>
+
