@@ -1,45 +1,94 @@
-<div class="container" style="max-width: 600px; margin-top: 100px;">
-  <h2 class="mb-4 text-center">Register</h2>
+<!--<div class="container" style="max-width: 600px; margin-top: 100px;">-->
+<!--  <h2 class="mb-4 text-center">Register</h2>-->
+<!---->
+<!--  {{#if successMessage}}-->
+<!--    <div class="alert alert-success alert-dismissible fade show" role="alert">-->
+<!--      <strong>Success:</strong> {{successMessage}}-->
+<!--      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+<!--    </div>-->
+<!--    <div class="text-end">-->
+<!--      <a href="/login" class="btn btn-primary">Proceed to Log in</a>-->
+<!--    </div>-->
+<!--    <br /><br /><br />-->
+<!--  {{else}}-->
+<!--  {{#if errorMessage}}-->
+<!--    <div class="alert alert-danger alert-dismissible fade show" role="alert">-->
+<!--      <strong>Error:</strong> {{errorMessage}}-->
+<!--      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>-->
+<!--    </div>-->
+<!--  {{/if}}-->
+<!---->
+<!--  <form action="/register" method="POST">-->
+<!--    <div class="mb-3">-->
+<!--      <label for="userName" class="form-label">User Name</label>-->
+<!--      <input type="text" class="form-control" id="userName" name="userName" placeholder="Enter a user name" value="{{userName}}" required>-->
+<!--    </div>-->
+<!--    <div class="mb-3">-->
+<!--      <label for="email" class="form-label">Email Address</label>-->
+<!--      <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address" required>-->
+<!--    </div>-->
+<!--    <div class="mb-3">-->
+<!--      <label for="password" class="form-label">Password</label>-->
+<!--      <input type="password" class="form-control" id="password" name="password" placeholder="Enter a password" required>-->
+<!--    </div>-->
+<!--    <div class="mb-3">-->
+<!--      <label for="password2" class="form-label">Confirm Password</label>-->
+<!--      <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm your password" required>-->
+<!--    </div>-->
+<!--    <button type="submit" class="btn btn-success w-100">Register</button>-->
+<!--  </form>-->
+<!--  {{/if}}-->
+<!---->
+<!--  <div class="mt-3 text-center">-->
+<!--    <p>Already have an account? <a href="/login">Login here</a>.</p>-->
+<!--  </div>-->
+<!--</div>-->
 
-  {{#if successMessage}}
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-      <strong>Success:</strong> {{successMessage}}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">Register</h4>
+        </div>
+        <div class="card-body">
+          {{#if successMessage}}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <strong>Success:</strong> {{successMessage}}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <div class="text-end">
+              <a href="/login" class="btn btn-primary">Proceed to Log in</a>
+            </div>
+          {{else}}
+            {{#if errorMessage}}
+              <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Error:</strong> {{errorMessage}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {{/if}}
+            <form action="/register" method="POST">
+              <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="userName" name="userName" placeholder="User Name" value="{{userName}}" required>
+                <label for="userName">User Name</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" required>
+                <label for="email">Email Address</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                <label for="password">Password</label>
+              </div>
+              <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm Password" required>
+                <label for="password2">Confirm Password</label>
+              </div>
+              <button type="submit" class="btn btn-success w-100">Register</button>
+            </form>
+          {{/if}}
+        </div>
+      </div>
     </div>
-    <div class="text-end">
-      <a href="/login" class="btn btn-primary">Proceed to Log in</a>
-    </div>
-    <br /><br /><br />
-  {{else}}
-  {{#if errorMessage}}
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-      <strong>Error:</strong> {{errorMessage}}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  {{/if}}
-
-  <form action="/register" method="POST">
-    <div class="mb-3">
-      <label for="userName" class="form-label">User Name</label>
-      <input type="text" class="form-control" id="userName" name="userName" placeholder="Enter a user name" value="{{userName}}" required>
-    </div>
-    <div class="mb-3">
-      <label for="email" class="form-label">Email Address</label>
-      <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address" required>
-    </div>
-    <div class="mb-3">
-      <label for="password" class="form-label">Password</label>
-      <input type="password" class="form-control" id="password" name="password" placeholder="Enter a password" required>
-    </div>
-    <div class="mb-3">
-      <label for="password2" class="form-label">Confirm Password</label>
-      <input type="password" class="form-control" id="password2" name="password2" placeholder="Confirm your password" required>
-    </div>
-    <button type="submit" class="btn btn-success w-100">Register</button>
-  </form>
-  {{/if}}
-
-  <div class="mt-3 text-center">
-    <p>Already have an account? <a href="/login">Login here</a>.</p>
   </div>
 </div>

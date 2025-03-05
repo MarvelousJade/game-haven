@@ -1,32 +1,42 @@
-<div class="row">
-  <div class="col-md-12">
-    <h2><a href="/categories/add" class="btn btn-success pull-right">Add Category</a></h2>
-    <hr />
+<div class="container mt-5">
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h3 class="mb-0">Categories</h3>
+      <a href="/categories/add" class="btn btn-success">Add Category</a>
+    </div>
+    <div class="card-body">
+      {{#if data.length}}
       <div class="table-responsive">
-        <table class="table">
+        <table class="table table-hover">
           <thead>
             <tr>
-              <th>Category ID</th>
-              <th>Category Name</th>
-              <th><th>
+              <th scope="col">Category ID</th>
+              <th scope="col">Category Name</th>
+              <th scope="col">Actions</th>
             </tr>
           </thead>
           <tbody>
             {{#each data}}
               <tr>
-                <td><a href="/items?category={{id}}">{{id}}</td>
-                <td><a href="/items?category={{id}}">{{category}}</td>
-                <td><a href="/categories/delete/{{id}}" class="btn btn-danger">remove</td>
+                <td>
+                  <a href="/items?category={{id}}">{{id}}</a>
+                </td>
+                <td>
+                  <a href="/items?category={{id}}">{{category}}</a>
+                </td>
+                <td>
+                  <a href="/categories/delete/{{id}}" class="btn btn-danger btn-sm">Remove</a>
+                </td>
               </tr>
             {{/each}}
           </tbody>
-      </table>  
+        </table>
+      </div>
+      {{else}}
+      <div class="text-center">
+        <strong>{{message}}</strong>
+      </div>
+      {{/if}}
     </div>
-  </div>
-  {{#unless data.length}}
-    <div class="col-md-12 text-center">
-      <strong>{{message}}</strong>
-    </div>
-  {{/unless}}
   </div>
 </div>
